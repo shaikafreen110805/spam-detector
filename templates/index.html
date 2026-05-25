@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SpamShield AI - Spam Detector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .navbar {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #666;
+            margin-left: 20px;
+            font-weight: 500;
+        }
+        .nav-links a:hover {
+            color: #667eea;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: monospace;
+            margin: 15px 0;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+        .btn-outline {
+            background: #ed8936;
+            color: white;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        .result-spam {
+            background: #fff5f5;
+            border-left: 4px solid #fc8181;
+        }
+        .result-ham {
+            background: #f0fff4;
+            border-left: 4px solid #68d391;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .badge-spam {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        .badge-ham {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">🛡️ SpamShield AI</div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h1>📧 Spam Email Detection System</h1>
+            <p class="subtitle">Paste an email below to check if it's spam or legitimate</p>
+            
+            <textarea id="emailInput" rows="6" placeholder="Paste your email content here...&#10;&#10;Example:&#10;Congratulations! You've won $1000! Click here to claim your prize now!"></textarea>
+            
+            <div class="button-group">
+                <button class="btn-primary" onclick="detectSpam()">🔍 Detect Spam</button>
+                <button class="btn-secondary" onclick="clearText()">🗑️ Clear</button>
+                <button class="btn-outline" onclick="loadSample()">📝 Load Example</button>
+            </div>
+            
+            <div id="result" class="result"></div>
+        </div>
+        
+        <div class="footer">
+            <p>Powered by Machine Learning | Naive Bayes | TF-IDF | 97.4% Accuracy</p>
+        </div>
+    </div>
+    
+    <script>
+        async function detectSpam() {
+            const email = document.getElementById('emailInput').value;
+            if (!email.trim()) {
+                alert('Please enter an email to analyze');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+                
+                const data = await response.json();
+                displayResult(data);
+            } catch (error) {
+                alert('Error analyzing email. Please try again.');
+            }
+        }
+        
+        function displayResult(data) {
+            const resultDiv = document.getElementById('result');
+            const isSpam = data.label === 'spam';
+            
+            resultDiv.className = `result result-${data.label}`;
+            resultDiv.innerHTML = `
+                <div class="badge badge-${data.label}">
+                    ${isSpam ? '⚠️ SPAM DETECTED' : '✅ HAM (NOT SPAM)'}
+                </div>
+                <h3>${isSpam ? 'This appears to be SPAM!' : 'This appears to be legitimate (HAM)'}</h3>
+                <p><strong>Confidence:</strong> ${data.confidence}%</p>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" style="width: ${data.confidence}%"></div>
+                </div>
+                <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                    ${isSpam ? '⚠️ Be careful! This email contains spam indicators.' : '✓ This email appears safe.'}
+                </p>
+            `;
+            resultDiv.style.display = 'block';
+        }
+        
+        function clearText() {
+            document.getElementById('emailInput').value = '';
+            document.getElementById('result').style.display = 'none';
+        }
+        
+        function loadSample() {
+            const spamExamples = [
+                "Congratulations! You've won a $1000 gift card! Click here to claim your prize now!",
+                "URGENT: Your PayPal account has been compromised. Verify your account immediately!",
+                "FREE iPhone 15! You've been selected as a winner. Text WIN to 555-123 now!",
+                "Dear customer, your account will be suspended. Click here to verify now."
+            ];
+            const randomExample = spamExamples[Math.floor(Math.random() * spamExamples.length)];
+            document.getElementById('emailInput').value = randomExample;
+            document.getElementById('result').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

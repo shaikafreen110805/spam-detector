@@ -58,7 +58,7 @@ def extract_phishing_indicators(text):
     # Financial/brand mentions
     if any(word in text_lower for word in ['paypal', 'bank', 'chase', 'wells fargo', 'boa', 'bank of america']):
         indicators.append("🏦 Financial account mentioned")
-    if any(word in text_lower for word in ['amazon', 'netflix', 'apple', 'microsoft', 'google']):
+    if any(word in text_lower for word in ['amazon', 'netflix', 'apple', 'microsoft', 'google', 'ebay', 'walmart']):
         indicators.append("📦 Well-known brand mentioned")
     
     # Suspicious requests
@@ -66,30 +66,88 @@ def extract_phishing_indicators(text):
         indicators.append("🔐 Verification requested")
     if any(word in text_lower for word in ['update', 'renew', 'upgrade']):
         indicators.append("📝 Account update requested")
-    if any(word in text_lower for word in ['click here', 'click the link', 'visit']):
+    if any(word in text_lower for word in ['click here', 'click the link', 'visit', 'http', 'https']):
         indicators.append("🔗 Suspicious link detected")
     
     # Urgency/pressure tactics
-    if any(word in text_lower for word in ['urgent', 'immediately', 'asap']):
+    if any(word in text_lower for word in ['urgent', 'immediately', 'asap', 'right now']):
         indicators.append("⏰ Urgency/pressure tactics")
-    if any(word in text_lower for word in ['suspended', 'limited', 'locked', 'disabled', 'closed']):
+    if any(word in text_lower for word in ['suspended', 'limited', 'locked', 'disabled', 'closed', 'restricted']):
         indicators.append("⚠️ Account threat detected")
-    if any(word in text_lower for word in ['48 hours', '24 hours', 'soon']):
+    if any(word in text_lower for word in ['48 hours', '24 hours', 'soon', 'today', 'immediately']):
         indicators.append("⌛ Time pressure detected")
     
     # Scam patterns
-    if any(word in text_lower for word in ['winner', 'won', 'prize', 'congratulations']):
+    if any(word in text_lower for word in ['winner', 'won', 'prize', 'congratulations', 'claim']):
         indicators.append("🏆 Lottery/prize claim")
-    if any(word in text_lower for word in ['million', 'billion', 'cash']):
+    if any(word in text_lower for word in ['million', 'billion', 'cash', 'free', 'money']):
         indicators.append("💰 Unrealistic money offer")
-    if 'http' in text_lower or 'https' in text_lower:
-        indicators.append("🔗 External link present")
-    
-    # Grammar/spelling issues
-    if re.search(r'[A-Z]{5,}', text):
-        indicators.append("📢 Excessive capitalization")
     
     return indicators
+
+def force_phishing_detection(text, label, confidence):
+    """FORCE detection of obvious phishing emails - Rule-based override"""
+    text_lower = text.lower()
+    
+    # Keywords that ALWAYS indicate phishing
+    phishing_keywords = [
+        'bank of america', 'boa', 'chase', 'wells fargo', 'paypal',
+        'verify your account', 'account has been limited', 'unusual activity',
+        'confirm your identity', 'account suspended', 'click here to verify',
+        'within 24 hours', 'account will be closed', 'suspicious login',
+        'unusual login', 'restricted access', 'verify immediately',
+        'account limited', 'temporarily restricted', 'security alert'
+    ]
+    
+    # Count matches
+    matches = sum(1 for keyword in phishing_keywords if keyword in text_lower)
+    
+    # Check for URL patterns
+    has_url = 'http://' in text_lower or 'https://' in text_lower or '.com' in text_lower
+    
+    # Force SPAM if multiple indicators
+    if matches >= 2 and has_url:
+        print(f"⚠️ FORCED PHISHING: {matches} keyword matches + URL")
+        return 'spam', 95.0
+    
+    if matches >= 3:
+        print(f"⚠️ FORCED PHISHING: {matches} keyword matches")
+        return 'spam', 95.0
+    
+    # Specific brand phishing detection
+    brand_phishing = [
+        ('bank of america', 'verify', 'spam'),
+        ('bank of america', 'alert', 'spam'),
+        ('bank of america', 'unusual', 'spam'),
+        ('paypal', 'verify', 'spam'),
+        ('paypal', 'limited', 'spam'),
+        ('paypal', 'suspended', 'spam'),
+        ('amazon', 'payment', 'spam'),
+        ('amazon', 'cancelled', 'spam'),
+        ('netflix', 'expire', 'spam'),
+        ('netflix', 'subscription', 'spam'),
+        ('chase', 'alert', 'spam'),
+        ('wells fargo', 'alert', 'spam'),
+    ]
+    
+    for brand, action, result in brand_phishing:
+        if brand in text_lower and action in text_lower:
+            if has_url or 'click' in text_lower:
+                print(f"⚠️ FORCED PHISHING: {brand} {action} scam")
+                return 'spam', 95.0
+    
+    # Check for known scam patterns
+    scam_patterns = [
+        'won', 'winner', 'prize', 'lottery', 'million',
+        'click here to claim', 'verify your account', 'account suspended'
+    ]
+    
+    scam_matches = sum(1 for pattern in scam_patterns if pattern in text_lower)
+    if scam_matches >= 2 and has_url:
+        print(f"⚠️ FORCED PHISHING: {scam_matches} scam patterns + URL")
+        return 'spam', 95.0
+    
+    return label, confidence
 
 def predict_email(text):
     """Main prediction function"""
@@ -104,9 +162,15 @@ def predict_email(text):
     # Extract phishing indicators
     indicators = extract_phishing_indicators(text)
     
-    # Generate advice based on prediction
+    # FORCE PHISHING DETECTION - This overrides the model
+    label, confidence = force_phishing_detection(text, label, confidence)
+    
+    # Generate advice based on final prediction
     if label == "spam":
-        advice = "⚠️ DO NOT click any links, reply to the sender, or share personal information. Mark as spam and delete."
+        advice = "⚠️ DO NOT click any links, reply to the sender, or share personal information. Mark as spam and delete immediately."
+        # Add critical indicator if forced
+        if confidence >= 95:
+            indicators.insert(0, "🔴 CRITICAL: Confirmed phishing attempt - DO NOT respond")
     else:
         advice = "✓ No spam patterns detected. However, always verify unexpected emails from known brands by visiting their official website directly."
     

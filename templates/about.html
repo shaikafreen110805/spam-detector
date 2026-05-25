@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - Email Guard</title>
+    <title>About - PhishGuard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -48,7 +48,7 @@
             font-weight: 500;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 3rem 2rem;
         }
@@ -72,6 +72,17 @@
             line-height: 1.6;
             margin-bottom: 1rem;
         }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .feature {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 12px;
+        }
         .footer {
             text-align: center;
             padding: 2rem;
@@ -89,7 +100,7 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">Email Guard</div>
+            <div class="logo">🛡️ PhishGuard</div>
             <div class="nav-links">
                 <a href="/">Home</a>
                 <a href="/about">About</a>
@@ -99,25 +110,33 @@
 
     <div class="container">
         <div class="card">
-            <h1>About Email Guard</h1>
-            <p>A simple tool to help you identify suspicious emails before you interact with them.</p>
+            <h1>About PhishGuard</h1>
+            <p>PhishGuard is an advanced phishing detection system that uses machine learning to identify suspicious emails, scam attempts, and phishing attacks.</p>
             
-            <h2>How it works</h2>
-            <p>Email Guard analyzes email content using pattern recognition to flag potential spam or phishing attempts. It looks for common red flags like urgent language, suspicious links, and known spam patterns.</p>
+            <h2>How It Works</h2>
+            <p>Our AI analyzes email content for common phishing indicators including:</p>
+            <div class="feature-grid">
+                <div class="feature">🔗 Suspicious links & URLs</div>
+                <div class="feature">🏦 Brand name mentions</div>
+                <div class="feature">⏰ Urgency & pressure tactics</div>
+                <div class="feature">🔐 Verification requests</div>
+                <div class="feature">💰 Unrealistic money offers</div>
+                <div class="feature">⚠️ Account threat language</div>
+            </div>
             
-            <h2>Accuracy</h2>
-            <p>Based on tests with over 5,500 real emails, our system correctly identifies suspicious emails 97% of the time. It rarely flags legitimate emails as spam — about 0% false positive rate.</p>
+            <h2>Technology</h2>
+            <p>Built with Python, Scikit-learn, and NLTK. The system uses a Naive Bayes classifier trained on thousands of real spam and phishing emails, with TF-IDF vectorization for feature extraction.</p>
             
             <h2>Privacy</h2>
-            <p>Your email content is not stored. Each check is processed in real-time and immediately discarded.</p>
+            <p>Your email content is not stored. Each analysis is processed in real-time and immediately discarded. We never save or share your data.</p>
             
             <h2>Limitations</h2>
-            <p>No system is perfect. Always use your best judgment before clicking links or sharing personal information online.</p>
+            <p>No system is perfect. Always use common sense when dealing with unexpected emails. When in doubt, contact the company directly through official channels, not through links in the email.</p>
         </div>
     </div>
 
     <div class="footer">
-        <p>Email Guard — A tool for safer inboxes</p>
+        <p>PhishGuard — AI-Powered Phishing Detection</p>
     </div>
 </body>
 </html>

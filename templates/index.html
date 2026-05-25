@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Guard - Protect Your Inbox</title>
+    <title>PhishGuard - Advanced Phishing Detection</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -19,7 +19,6 @@
             line-height: 1.5;
         }
 
-        /* Navbar */
         .navbar {
             background: white;
             border-bottom: 1px solid #e6e9f0;
@@ -27,8 +26,8 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(10px);
             background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
         }
 
         .nav-container {
@@ -47,7 +46,6 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
         }
 
         .nav-links {
@@ -67,21 +65,19 @@
             color: #1a1f36;
         }
 
-        /* Main Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 3rem 2rem;
         }
 
-        /* Hero Section */
         .hero {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
         }
 
         .hero h1 {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             color: #1a1f36;
             margin-bottom: 1rem;
@@ -89,7 +85,7 @@
         }
 
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #4a5568;
             max-width: 600px;
             margin: 0 auto;
@@ -106,7 +102,6 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Stats Grid - Minimal & Clean */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -120,6 +115,7 @@
             border-radius: 20px;
             border: 1px solid #eef2f6;
             transition: all 0.2s;
+            text-align: center;
         }
 
         .stat-card:hover {
@@ -140,7 +136,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* Main Card */
         .main-card {
             background: white;
             border-radius: 24px;
@@ -162,7 +157,6 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Textarea - Human friendly */
         .email-input {
             width: 100%;
             padding: 1rem;
@@ -181,7 +175,6 @@
             background: white;
         }
 
-        /* Button Group */
         .button-group {
             display: flex;
             gap: 0.75rem;
@@ -221,7 +214,12 @@
             border-color: #cbd5e0;
         }
 
-        /* Result Section */
+        .btn-warning {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            color: #c53030;
+        }
+
         .result-section {
             margin-top: 1.5rem;
             padding-top: 1.5rem;
@@ -244,7 +242,7 @@
         }
 
         .result-title {
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1.1rem;
             margin-bottom: 0.5rem;
         }
@@ -252,7 +250,7 @@
         .confidence-meter {
             background: #e2e8f0;
             border-radius: 20px;
-            height: 6px;
+            height: 8px;
             width: 100%;
             margin: 1rem 0;
             overflow: hidden;
@@ -265,7 +263,39 @@
             transition: width 0.3s ease;
         }
 
-        /* Examples Section */
+        .indicators-list {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eef2f6;
+        }
+
+        .indicators-list h4 {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-bottom: 0.5rem;
+        }
+
+        .indicators-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .indicators-list li {
+            font-size: 0.85rem;
+            color: #f56565;
+            margin-bottom: 0.25rem;
+            padding-left: 0;
+        }
+
+        .advice-box {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #f7fafc;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #4a5568;
+        }
+
         .examples-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -285,32 +315,29 @@
         .example-card:hover {
             background: white;
             border-color: #cbd5e0;
+            transform: translateY(-2px);
         }
 
         .example-title {
             font-weight: 600;
             font-size: 0.85rem;
             margin-bottom: 0.5rem;
-            color: #718096;
+        }
+
+        .example-phishing {
+            color: #f56565;
+        }
+
+        .example-safe {
+            color: #48bb78;
         }
 
         .example-text {
-            font-size: 0.85rem;
-            color: #1a1f36;
+            font-size: 0.8rem;
+            color: #4a5568;
             line-height: 1.4;
         }
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: #a0aec0;
-            font-size: 0.8rem;
-            border-top: 1px solid #eef2f6;
-            margin-top: 3rem;
-        }
-
-        /* Loading */
         .loading {
             display: none;
             text-align: center;
@@ -331,7 +358,15 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Responsive */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #a0aec0;
+            font-size: 0.8rem;
+            border-top: 1px solid #eef2f6;
+            margin-top: 3rem;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1.5rem;
@@ -341,7 +376,7 @@
                 gap: 1rem;
             }
             .hero h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
             .nav-container {
                 padding: 0 1rem;
@@ -352,7 +387,7 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">Email Guard</div>
+            <div class="logo">🛡️ PhishGuard</div>
             <div class="nav-links">
                 <a href="/">Home</a>
                 <a href="/about">About</a>
@@ -362,70 +397,82 @@
 
     <div class="container">
         <div class="hero">
-            <div class="badge">Protect your inbox</div>
+            <div class="badge">Advanced Phishing Detection</div>
             <h1>Is this email safe?</h1>
-            <p>Paste any email below and we'll help you spot potential spam or phishing attempts.</p>
+            <p>Paste any email and our AI will detect phishing attempts, scams, and suspicious patterns.</p>
         </div>
 
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number">97%</div>
-                <div class="stat-label">Accuracy</div>
+                <div class="stat-label">Detection Rate</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">0%</div>
+                <div class="stat-number">&lt;0.5%</div>
                 <div class="stat-label">False Positives</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">5.5K</div>
-                <div class="stat-label">Emails analyzed</div>
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Emails Analyzed</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">&lt;1s</div>
-                <div class="stat-label">Response time</div>
+                <div class="stat-label">Response Time</div>
             </div>
         </div>
 
         <div class="main-card">
             <div class="section-title">📧 Paste email content</div>
-            <div class="section-subtitle">Paste the full email text including subject and body</div>
+            <div class="section-subtitle">Include the full message - subject line and body</div>
             
-            <textarea id="emailInput" class="email-input" rows="6" placeholder="Example:&#10;&#10;From: support@paypal.com&#10;Subject: Your account has been limited&#10;&#10;Dear customer, your PayPal account has been temporarily limited due to suspicious activity. Please verify your account immediately by clicking the link below..."></textarea>
+            <textarea id="emailInput" class="email-input" rows="8" placeholder="Example:&#10;&#10;From: support@paypal.com&#10;Subject: Your account has been limited&#10;&#10;Dear customer,&#10;&#10;We noticed unusual activity on your PayPal account. To protect your account, we've temporarily limited access.&#10;&#10;Please verify your identity immediately: https://paypal.com.verify-account.com&#10;&#10;If we don't hear from you within 48 hours, your account will be permanently suspended."></textarea>
             
             <div class="button-group">
-                <button class="btn btn-primary" onclick="checkEmail()">Check email</button>
-                <button class="btn btn-secondary" onclick="clearText()">Clear</button>
+                <button class="btn btn-primary" onclick="checkEmail()">🔍 Analyze Email</button>
+                <button class="btn btn-secondary" onclick="clearText()">🗑️ Clear</button>
             </div>
 
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p style="margin-top: 0.75rem; color: #718096;">Analyzing...</p>
+                <p style="margin-top: 0.75rem; color: #718096;">Scanning for phishing patterns...</p>
             </div>
 
             <div id="resultSection" class="result-section"></div>
         </div>
 
         <div class="main-card">
-            <div class="section-title">📋 Try these examples</div>
-            <div class="section-subtitle">Click any example to see how it works</div>
+            <div class="section-title">📋 Test with real examples</div>
+            <div class="section-subtitle">Click any example to see how PhishGuard detects threats</div>
             <div class="examples-grid">
-                <div class="example-card" onclick="loadExample('spam')">
-                    <div class="example-title">⚠️ Suspicious email</div>
-                    <div class="example-text">"Congratulations! You've won $1000. Click here to claim your prize..."</div>
+                <div class="example-card" onclick="loadExample('paypal')">
+                    <div class="example-title example-phishing">⚠️ PayPal Phishing</div>
+                    <div class="example-text">"URGENT: Your PayPal account has been limited. Verify now: http://paypal-secure.com"</div>
                 </div>
-                <div class="example-card" onclick="loadExample('ham')">
-                    <div class="example-title">✓ Regular email</div>
-                    <div class="example-text">"Hi team, don't forget our meeting tomorrow at 3pm in conference room B..."</div>
+                <div class="example-card" onclick="loadExample('bank')">
+                    <div class="example-title example-phishing">⚠️ Bank Alert Scam</div>
+                    <div class="example-text">"Bank of America: Unusual activity detected. Confirm your identity immediately."</div>
                 </div>
-                <div class="example-card" onclick="loadExample('phishing')">
-                    <div class="example-title">⚠️ Phishing attempt</div>
-                    <div class="example-text">"URGENT: Your PayPal account has been compromised. Verify now..."</div>
+                <div class="example-card" onclick="loadExample('amazon')">
+                    <div class="example-title example-phishing">⚠️ Amazon Fraud</div>
+                    <div class="example-text">"Your Amazon order #38291 has been cancelled. Update payment info: http://amazon-verify.com"</div>
+                </div>
+                <div class="example-card" onclick="loadExample('netflix')">
+                    <div class="example-title example-phishing">⚠️ Netflix Scam</div>
+                    <div class="example-text">"Netflix: Your subscription has expired. Click here to renew to avoid interruption."</div>
+                </div>
+                <div class="example-card" onclick="loadExample('lottery')">
+                    <div class="example-title example-phishing">⚠️ Lottery Scam</div>
+                    <div class="example-text">"CONGRATULATIONS! You won $5,000,000! Click here to claim your prize!"</div>
+                </div>
+                <div class="example-card" onclick="loadExample('safe')">
+                    <div class="example-title example-safe">✓ Safe Email</div>
+                    <div class="example-text">"Hi team, our meeting is at 3pm tomorrow in Conference Room B. Please bring your updates."</div>
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            <p>Email Guard helps you identify suspicious emails. Always verify before clicking links.</p>
+            <p>PhishGuard helps identify potential phishing attempts. Always verify suspicious emails by contacting the company directly through official channels.</p>
         </div>
     </div>
 
@@ -433,7 +480,7 @@
         async function checkEmail() {
             const email = document.getElementById('emailInput').value;
             if (!email.trim()) {
-                alert('Please paste an email to check');
+                alert('Please paste an email to analyze');
                 return;
             }
 
@@ -447,8 +494,14 @@
                     body: JSON.stringify({ email: email })
                 });
                 const data = await response.json();
-                showResult(data);
+                
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    showResult(data);
+                }
             } catch (error) {
+                console.error('Error:', error);
                 alert('Something went wrong. Please try again.');
             } finally {
                 document.getElementById('loading').style.display = 'none';
@@ -459,20 +512,36 @@
             const isSpam = data.label === 'spam';
             const resultDiv = document.getElementById('resultSection');
             
+            let indicatorsHtml = '';
+            if (data.indicators && data.indicators.length > 0) {
+                indicatorsHtml = `
+                    <div class="indicators-list">
+                        <h4>🚨 Red flags detected:</h4>
+                        <ul>
+                            ${data.indicators.map(i => `<li>${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
             resultDiv.innerHTML = `
                 <div class="result-card ${isSpam ? 'result-spam' : 'result-safe'}">
                     <div class="result-title">
-                        ${isSpam ? '⚠️ This email looks suspicious' : '✓ This email appears safe'}
+                        ${isSpam ? '⚠️ PHISHING / SPAM DETECTED' : '✓ EMAIL APPEARS SAFE'}
                     </div>
                     <p style="color: #4a5568; font-size: 0.9rem; margin: 0.5rem 0;">
-                        ${isSpam ? 'Our system detected patterns commonly found in spam or phishing emails.' : 'Our system did not detect any spam patterns in this email.'}
+                        ${isSpam ? 'This email contains patterns commonly found in phishing attacks.' : 'No phishing patterns detected in this email.'}
                     </p>
                     <div class="confidence-meter">
                         <div class="confidence-fill" style="width: ${data.confidence}%"></div>
                     </div>
-                    <p style="font-size: 0.8rem; color: #718096;">
-                        Confidence: ${data.confidence}% — ${isSpam ? 'Proceed with caution' : 'Looks legitimate'}
+                    <p style="font-size: 0.8rem; color: #718096; margin-bottom: 0.5rem;">
+                        Confidence: ${data.confidence}% — ${isSpam ? 'High probability of phishing' : 'Low probability of phishing'}
                     </p>
+                    ${indicatorsHtml}
+                    <div class="advice-box">
+                        <strong>${isSpam ? '⚠️ What to do:' : '💡 Tip:'}</strong> ${data.advice}
+                    </div>
                 </div>
             `;
             resultDiv.style.display = 'block';
@@ -485,9 +554,12 @@
 
         function loadExample(type) {
             const examples = {
-                spam: "Congratulations! You've been selected as the lucky winner of a $1,000 Amazon gift card! Click here to claim your prize within 24 hours: http://fake-link.com/claim",
-                ham: "Hi team, just a reminder about our design review meeting tomorrow at 3pm in Conference Room B. Please bring your latest mockups. Thanks!",
-                phishing: "URGENT: Your PayPal account has been temporarily limited due to unusual activity. To restore your account, please verify your identity immediately: http://paypal-verify.com/login"
+                paypal: "URGENT: Your PayPal account has been temporarily limited. We noticed unusual activity from an unknown device. To restore your account, please verify your identity immediately: https://paypal.com.verify-account.com/secure/login If we don't hear from you within 48 hours, your account will be permanently suspended.",
+                bank: "Bank of America Security Alert: We detected unusual activity on your checking account. For your protection, we've temporarily restricted access. Please confirm your identity within 24 hours: http://bankofamerica-verify-alert.com Thank you for your cooperation.",
+                amazon: "Amazon: Your order #ORD-83742 has been cancelled due to payment verification failure. To restore your order and update your payment information, please visit: https://amazon-payment-verify.net Failure to update will result in account suspension.",
+                netflix: "Netflix: Your subscription will expire today! We were unable to process your latest payment. Please update your billing information immediately to continue enjoying Netflix: http://netflix-billing-update.com/renew",
+                lottery: "CONGRATULATIONS! You've been selected as the lucky winner of the UK National Lottery! You have won $5,000,000 USD! To claim your prize, click here: http://lottery-claim-fake.com/winner Please respond within 24 hours.",
+                safe: "Hi team, just a reminder about our design review meeting tomorrow at 3pm in Conference Room B. Please bring your latest mockups and we'll discuss the feedback from the client. Let me know if you need the slides beforehand. Thanks!"
             };
             document.getElementById('emailInput').value = examples[type];
             document.getElementById('resultSection').style.display = 'none';

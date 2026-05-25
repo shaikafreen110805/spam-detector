@@ -35,12 +35,30 @@ stemmer = PorterStemmer()
 stop_words = set(stopwords.words('english'))
 
 def clean_text(text):
+    # Convert to lowercase
     text = text.lower()
-    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    
+    # Mark URL patterns (replace with [URL] token - helps detect phishing)
+    text = re.sub(r'https?://[^\s]+', '[URL]', text)
+    text = re.sub(r'www\.[^\s]+', '[URL]', text)
+    text = re.sub(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', '[EMAIL]', text)
+    
+    # Keep important phishing indicators
+    # ($, %, numbers might indicate scams)
+    text = re.sub(r'\b\d{4,}\b', '[NUMBER]', text)  # Large numbers become [NUMBER]
+    
+    # Remove punctuation but keep important symbols
+    text = re.sub(r'[^\w\s\[\]\/]', ' ', text)
+    
+    # Tokenize
     words = text.split()
-    words = [stemmer.stem(word) for word in words if word not in stop_words]
+    
+    # Remove stop words but keep important phishing indicators
+    important_words = {'urgent', 'verify', 'account', 'suspended', 'limited', 'click', 'confirm'}
+    words = [stemmer.stem(word) for word in words 
+             if word not in stop_words or word in important_words]
+    
     return ' '.join(words)
-
 df['clean_message'] = df['message'].apply(clean_text)
 df['label_num'] = df['label'].map({'ham': 0, 'spam': 1})
 

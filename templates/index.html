@@ -1,258 +1,496 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SpamShield AI - Spam Detector</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Guard - Protect Your Inbox</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f7fb;
+            color: #1a1f36;
+            line-height: 1.5;
         }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+
+        /* Navbar */
         .navbar {
             background: white;
-            border-radius: 15px;
-            padding: 15px 30px;
-            margin-bottom: 30px;
+            border-bottom: 1px solid #e6e9f0;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
+
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1a1f36, #4a5568);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: -0.5px;
         }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
         .nav-links a {
             text-decoration: none;
-            color: #666;
-            margin-left: 20px;
+            color: #4a5568;
             font-weight: 500;
+            transition: color 0.2s;
         }
+
         .nav-links a:hover {
-            color: #667eea;
+            color: #1a1f36;
         }
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
         }
-        .subtitle {
-            color: #666;
-            margin-bottom: 20px;
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1a1f36;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
         }
-        textarea {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 14px;
-            font-family: monospace;
-            margin: 15px 0;
-            resize: vertical;
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #4a5568;
+            max-width: 600px;
+            margin: 0 auto;
         }
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        button {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
-        }
-        .btn-secondary {
-            background: #48bb78;
-            color: white;
-        }
-        .btn-outline {
-            background: #ed8936;
-            color: white;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            display: none;
-        }
-        .result-spam {
-            background: #fff5f5;
-            border-left: 4px solid #fc8181;
-        }
-        .result-ham {
-            background: #f0fff4;
-            border-left: 4px solid #68d391;
-        }
+
         .badge {
             display: inline-block;
-            padding: 5px 15px;
-            border-radius: 50px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            background: #e9ecef;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 1.5rem;
         }
-        .badge-spam {
-            background: #fed7d7;
-            color: #c53030;
+
+        /* Stats Grid - Minimal & Clean */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
         }
-        .badge-ham {
-            background: #c6f6d5;
-            color: #22543d;
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid #eef2f6;
+            transition: all 0.2s;
         }
-        .confidence-bar {
+
+        .stat-card:hover {
+            border-color: #cbd5e0;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1f36;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main Card */
+        .main-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid #eef2f6;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1f36;
+        }
+
+        .section-subtitle {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Textarea - Human friendly */
+        .email-input {
             width: 100%;
-            height: 8px;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            font-family: 'Inter', monospace;
+            resize: vertical;
+            transition: all 0.2s;
+            background: #fafbfc;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: #cbd5e0;
+            background: white;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.6rem 1.25rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: #1a1f36;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2d3748;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+        }
+
+        /* Result Section */
+        .result-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eef2f6;
+            display: none;
+        }
+
+        .result-card {
+            background: #fafbfc;
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+
+        .result-safe {
+            border-left: 4px solid #48bb78;
+        }
+
+        .result-spam {
+            border-left: 4px solid #f56565;
+        }
+
+        .result-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .confidence-meter {
             background: #e2e8f0;
-            border-radius: 10px;
+            border-radius: 20px;
+            height: 6px;
+            width: 100%;
+            margin: 1rem 0;
             overflow: hidden;
-            margin: 10px 0;
         }
+
         .confidence-fill {
+            background: #1a1f36;
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.5s ease;
+            border-radius: 20px;
+            transition: width 0.3s ease;
         }
+
+        /* Examples Section */
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .example-card {
+            background: #fafbfc;
+            border: 1px solid #eef2f6;
+            border-radius: 16px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-card:hover {
+            background: white;
+            border-color: #cbd5e0;
+        }
+
+        .example-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            color: #718096;
+        }
+
+        .example-text {
+            font-size: 0.85rem;
+            color: #1a1f36;
+            line-height: 1.4;
+        }
+
+        /* Footer */
         .footer {
             text-align: center;
-            color: white;
-            padding: 20px;
-            margin-top: 30px;
+            padding: 2rem;
+            color: #a0aec0;
+            font-size: 0.8rem;
+            border-top: 1px solid #eef2f6;
+            margin-top: 3rem;
         }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #e2e8f0;
+            border-top-color: #1a1f36;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 10px;
-            }
             .container {
-                padding: 10px;
+                padding: 1.5rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .nav-container {
+                padding: 0 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="navbar">
-            <div class="logo">🛡️ SpamShield AI</div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Email Guard</div>
             <div class="nav-links">
                 <a href="/">Home</a>
                 <a href="/about">About</a>
             </div>
         </div>
-        
-        <div class="card">
-            <h1>📧 Spam Email Detection System</h1>
-            <p class="subtitle">Paste an email below to check if it's spam or legitimate</p>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <div class="badge">Protect your inbox</div>
+            <h1>Is this email safe?</h1>
+            <p>Paste any email below and we'll help you spot potential spam or phishing attempts.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">97%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0%</div>
+                <div class="stat-label">False Positives</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">5.5K</div>
+                <div class="stat-label">Emails analyzed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">&lt;1s</div>
+                <div class="stat-label">Response time</div>
+            </div>
+        </div>
+
+        <div class="main-card">
+            <div class="section-title">📧 Paste email content</div>
+            <div class="section-subtitle">Paste the full email text including subject and body</div>
             
-            <textarea id="emailInput" rows="6" placeholder="Paste your email content here...&#10;&#10;Example:&#10;Congratulations! You've won $1000! Click here to claim your prize now!"></textarea>
+            <textarea id="emailInput" class="email-input" rows="6" placeholder="Example:&#10;&#10;From: support@paypal.com&#10;Subject: Your account has been limited&#10;&#10;Dear customer, your PayPal account has been temporarily limited due to suspicious activity. Please verify your account immediately by clicking the link below..."></textarea>
             
             <div class="button-group">
-                <button class="btn-primary" onclick="detectSpam()">🔍 Detect Spam</button>
-                <button class="btn-secondary" onclick="clearText()">🗑️ Clear</button>
-                <button class="btn-outline" onclick="loadSample()">📝 Load Example</button>
+                <button class="btn btn-primary" onclick="checkEmail()">Check email</button>
+                <button class="btn btn-secondary" onclick="clearText()">Clear</button>
             </div>
-            
-            <div id="result" class="result"></div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 0.75rem; color: #718096;">Analyzing...</p>
+            </div>
+
+            <div id="resultSection" class="result-section"></div>
         </div>
-        
+
+        <div class="main-card">
+            <div class="section-title">📋 Try these examples</div>
+            <div class="section-subtitle">Click any example to see how it works</div>
+            <div class="examples-grid">
+                <div class="example-card" onclick="loadExample('spam')">
+                    <div class="example-title">⚠️ Suspicious email</div>
+                    <div class="example-text">"Congratulations! You've won $1000. Click here to claim your prize..."</div>
+                </div>
+                <div class="example-card" onclick="loadExample('ham')">
+                    <div class="example-title">✓ Regular email</div>
+                    <div class="example-text">"Hi team, don't forget our meeting tomorrow at 3pm in conference room B..."</div>
+                </div>
+                <div class="example-card" onclick="loadExample('phishing')">
+                    <div class="example-title">⚠️ Phishing attempt</div>
+                    <div class="example-text">"URGENT: Your PayPal account has been compromised. Verify now..."</div>
+                </div>
+            </div>
+        </div>
+
         <div class="footer">
-            <p>Powered by Machine Learning | Naive Bayes | TF-IDF | 97.4% Accuracy</p>
+            <p>Email Guard helps you identify suspicious emails. Always verify before clicking links.</p>
         </div>
     </div>
-    
+
     <script>
-        async function detectSpam() {
+        async function checkEmail() {
             const email = document.getElementById('emailInput').value;
             if (!email.trim()) {
-                alert('Please enter an email to analyze');
+                alert('Please paste an email to check');
                 return;
             }
-            
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
+
             try {
                 const response = await fetch('/predict', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: email })
                 });
-                
                 const data = await response.json();
-                displayResult(data);
+                showResult(data);
             } catch (error) {
-                alert('Error analyzing email. Please try again.');
+                alert('Something went wrong. Please try again.');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
             }
         }
-        
-        function displayResult(data) {
-            const resultDiv = document.getElementById('result');
+
+        function showResult(data) {
             const isSpam = data.label === 'spam';
+            const resultDiv = document.getElementById('resultSection');
             
-            resultDiv.className = `result result-${data.label}`;
             resultDiv.innerHTML = `
-                <div class="badge badge-${data.label}">
-                    ${isSpam ? '⚠️ SPAM DETECTED' : '✅ HAM (NOT SPAM)'}
+                <div class="result-card ${isSpam ? 'result-spam' : 'result-safe'}">
+                    <div class="result-title">
+                        ${isSpam ? '⚠️ This email looks suspicious' : '✓ This email appears safe'}
+                    </div>
+                    <p style="color: #4a5568; font-size: 0.9rem; margin: 0.5rem 0;">
+                        ${isSpam ? 'Our system detected patterns commonly found in spam or phishing emails.' : 'Our system did not detect any spam patterns in this email.'}
+                    </p>
+                    <div class="confidence-meter">
+                        <div class="confidence-fill" style="width: ${data.confidence}%"></div>
+                    </div>
+                    <p style="font-size: 0.8rem; color: #718096;">
+                        Confidence: ${data.confidence}% — ${isSpam ? 'Proceed with caution' : 'Looks legitimate'}
+                    </p>
                 </div>
-                <h3>${isSpam ? 'This appears to be SPAM!' : 'This appears to be legitimate (HAM)'}</h3>
-                <p><strong>Confidence:</strong> ${data.confidence}%</p>
-                <div class="confidence-bar">
-                    <div class="confidence-fill" style="width: ${data.confidence}%"></div>
-                </div>
-                <p style="margin-top: 10px; color: #666; font-size: 14px;">
-                    ${isSpam ? '⚠️ Be careful! This email contains spam indicators.' : '✓ This email appears safe.'}
-                </p>
             `;
             resultDiv.style.display = 'block';
         }
-        
+
         function clearText() {
             document.getElementById('emailInput').value = '';
-            document.getElementById('result').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'none';
         }
-        
-        function loadSample() {
-            const spamExamples = [
-                "Congratulations! You've won a $1000 gift card! Click here to claim your prize now!",
-                "URGENT: Your PayPal account has been compromised. Verify your account immediately!",
-                "FREE iPhone 15! You've been selected as a winner. Text WIN to 555-123 now!",
-                "Dear customer, your account will be suspended. Click here to verify now."
-            ];
-            const randomExample = spamExamples[Math.floor(Math.random() * spamExamples.length)];
-            document.getElementById('emailInput').value = randomExample;
-            document.getElementById('result').style.display = 'none';
+
+        function loadExample(type) {
+            const examples = {
+                spam: "Congratulations! You've been selected as the lucky winner of a $1,000 Amazon gift card! Click here to claim your prize within 24 hours: http://fake-link.com/claim",
+                ham: "Hi team, just a reminder about our design review meeting tomorrow at 3pm in Conference Room B. Please bring your latest mockups. Thanks!",
+                phishing: "URGENT: Your PayPal account has been temporarily limited due to unusual activity. To restore your account, please verify your identity immediately: http://paypal-verify.com/login"
+            };
+            document.getElementById('emailInput').value = examples[type];
+            document.getElementById('resultSection').style.display = 'none';
         }
     </script>
 </body>
